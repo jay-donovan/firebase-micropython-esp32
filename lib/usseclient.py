@@ -1,7 +1,4 @@
-"""
-    Server Side Events (SSE) client for Python.
-    Provides a generator of SSE received through an existing HTTP response.
-    """
+
 
 # Copyright (C) 2016 SignalFx, Inc. All rights reserved.
 
@@ -19,7 +16,7 @@ class SSEClient(object):
         See http://www.w3.org/TR/2009/WD-eventsource-20091029/ for the
         specification.
         """
-    
+
     def __init__(self, event_source, char_enc='utf-8'):
         """Initialize the SSE client over an existing, ready to consume
             event source.
@@ -28,7 +25,7 @@ class SSEClient(object):
             """
         self._event_source = event_source
         self._char_enc = char_enc
-    
+
     def _read(self):
         """Read the incoming event source stream and yield event chunks.
             Unfortunately it is possible for some servers to decide to break an
@@ -54,10 +51,10 @@ def events(self):
             # ignored.
             if not line.strip() or line.startswith(_FIELD_SEPARATOR):
                 continue
-        
+
             data = line.split(_FIELD_SEPARATOR, 1)
             field = data[0]
-            
+
             # Ignore unknown fields.
             if field not in event.__dict__:
                 continue
@@ -65,7 +62,7 @@ def events(self):
             # Spaces may occur before the value; strip them. If no value is
             # present after the separator, assume an empty value.
             value = data[1].lstrip() if len(data) > 1 else ''
-        
+
             # The data field may come over multiple lines and their values
             # are concatenated with each other.
             if field == 'data':
@@ -77,11 +74,11 @@ def events(self):
         # Events with no data are not dispatched.
         if not event.data:
             continue
-        
+
         # If the data field ends with a newline, remove it.
         if event.data.endswith('\n'):
             event.data = event.data[0:-1]
-        
+
         # Dispatch the event
         yield event
 
@@ -93,13 +90,13 @@ def close(self):
 
 class Event(object):
     """Representation of an event from the event stream."""
-    
+
     def __init__(self, id=None, event='message', data='', retry=None):
         self.id = id
         self.event = event
         self.data = data
         self.retry = retry
-    
+
     def __str__(self):
         s = '{0} event'.format(self.event)
         if self.id:
