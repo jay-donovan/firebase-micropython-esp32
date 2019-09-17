@@ -4,6 +4,7 @@ import machine
 import time
 import ujson as json
 import ufirebase as firebase
+from machine import RTC
 
 DELAY = 5  # Delay in seconds
 
@@ -31,6 +32,9 @@ password = ""
 
 time.sleep(DELAY)
 
+rtc = RTC()
+rtc.ntp_sync("pool.ntp.org")
+
 auth = firebase.auth()
 db = firebase.database()
 
@@ -38,5 +42,8 @@ user = auth.sign_in_with_email_and_password(email, password)
 uid = user['localId']
 authToken = user['idToken']
 print(uid)
+print(time.time())
 
-print (db.child('users').child(uid).get(authToken))
+data = {"button":"8", "timestamp":time.time()}
+
+print (db.child('users').child(uid).put(data, authToken))

@@ -123,16 +123,18 @@ class Database:
         self.last_push_time = 0
         self.last_rand_chars = []
 
-    def put(URL, msg):
+    def put(self, msg, token):
         to_post = json.dumps(msg)
-        response = requests.put(firebaseURL(URL), data=to_post)
+        request_ref = Database.build_request_url(self, token)
+        response = requests.put(request_ref, data=to_post)
         if response.status_code != 200:
             raise FirebaseException(response.text)
 
 
-    def patch(URL, msg):
+    def patch(self, msg, token):
         to_post = json.dumps(msg)
-        response = requests.patch(firebaseURL(URL), data=to_post)
+        request_ref = Database.build_request_url(self, token)
+        response = requests.patch(request_ref, data=to_post)
         if response.status_code != 200:
             raise FirebaseException(response.text)
 
@@ -144,9 +146,10 @@ class Database:
             raise FirebaseException(response.text)
         return json.loads(response.text)
 
-    def push(URL, msg):
+    def push(self, msg, token):
         to_post = json.dumps(msg)
-        response = requests.post(firebaseURL(URL), data=to_post)
+        request_ref = Database.build_request_url(self, token)
+        response = requests.post(request_ref, data=to_post)
         if response.status_code != 200:
             raise Exception(response.text)
 
